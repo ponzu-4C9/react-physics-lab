@@ -72,28 +72,23 @@ export default function App() {
 
       // 円を描画
       ctx.beginPath()
-      ctx.arc(ballPos.current.x, 150, 30, 0, Math.PI * 2) // (x, y, 半径, 開始角, 終了角)
-      ctx.fillStyle = '#ff0000ff'
-      ctx.fill()
-      ctx.strokeStyle = '#c27e19ff'
-      ctx.lineWidth = 2
-      ctx.stroke()
+      ctx.fillStyle = '#000000ff'
+      ctx.fillRect(100, 100, 50, 50);
 
       requestAnimationFrame(update)
     }
 
     requestAnimationFrame(update);
-  }, [force])
+  }, [])
 
   return (
     <div className="App">
       <h1>React Physics Lab</h1>
       <canvas
         ref={canvasRef}
-        width={500}
-        height={400}
+        width={1000}
+        height={800}
       />
-      <input type="range" min="-1" max="1" step="0.01" value={force} onChange={(e) => setForce(Number(e.target.value))} />
     </div>
   )
 }
