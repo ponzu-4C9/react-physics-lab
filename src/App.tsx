@@ -43,11 +43,9 @@ export default function App() {
       const canvas = canvasRef.current
       if (!canvas) return
 
-      //制御系
-
       const C_L_tail = p.elek * (
         p.theta +
-        p.delta_e +
+        p.delta_e* Math.PI / 180 +
         Math.atan(p.thetaDot*p.l_tail*(1/p.V))
       )
       
@@ -77,7 +75,7 @@ export default function App() {
       ctx.fillRect(-300, -5, 600, 10);
         ctx.save();
         ctx.translate(200,-20);
-        ctx.rotate(-p.delta_e);
+        ctx.rotate(-p.delta_e* Math.PI / 180);
         ctx.fillStyle = '#000000ff';
         ctx.fillRect(-30, -5, 60, 10);
         ctx.restore();
@@ -95,8 +93,8 @@ export default function App() {
       <div className="mainPanel">
         <canvas
           ref={canvasRef}
-          width={1000}
-          height={800}
+          width={800}
+          height={600}
         />
         <input 
           type="range"
