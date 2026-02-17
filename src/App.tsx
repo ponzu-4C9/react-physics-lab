@@ -1,4 +1,4 @@
-import { useRef, useEffect} from 'react'
+import { useRef, useEffect, useState} from 'react'
 import './App.css'
 
 export default function App() {
@@ -24,7 +24,9 @@ export default function App() {
 
       elek:4.54//エレベーターの揚力傾斜
     });
-    const p = pitchParam.current;
+  const p = pitchParam.current;
+
+  const [, forceRender] = useState(0);
 
   const lastTime = useRef(0);
 
@@ -90,7 +92,7 @@ export default function App() {
       
       requestAnimationFrame(update)
     }
-
+    forceRender(c => c + 1);
     requestAnimationFrame(update);
   }, [])
 
