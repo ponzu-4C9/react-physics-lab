@@ -6,6 +6,11 @@ export default function App() {
   const pitchParam = useRef({
       theta:0,
       thetaDot:0, 
+
+      V:10,//m/s 機体速度
+
+      delta_e:0, //舵角
+
       Iyy: 197,
       L_main: 1960,//機体重量が200kgだから
       ρ:1.225,
@@ -15,7 +20,8 @@ export default function App() {
 
       l_tail:5.79,//重心と尾翼までの長さ
       S_tail:3.22,//エレベーターの面積
-      
+
+      elek:0.0792//エレベーターの揚力傾斜
     });
 
   useEffect(() => {
@@ -23,12 +29,14 @@ export default function App() {
       const canvas = canvasRef.current
       if (!canvas) return
 
-      ballPos.current.vx += force;
-      ballPos.current.x += ballPos.current.vx;
+      //制御系
+      const C_L_tail = pitchParam.current.elek * (
+        pitchParam.current.theta +
+        pitchParam.current.delta_e +
+        (180/Math.PI) * pitchParam.current.thetaDot*pitchParam.current.l_tail*(1/pitchParam.current.V)
+      )
 
-      if( ballPos.current.x < 0 || canvas.width < ballPos.current.x ){
-        ballPos.current.vx = 0;
-      }
+      
 
       const ctx = canvas.getContext('2d')
       if (!ctx) return
