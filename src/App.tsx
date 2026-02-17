@@ -70,11 +70,13 @@ export default function App() {
       // 背景をクリア
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // 円を描画
-      ctx.beginPath()
-      ctx.fillStyle = '#000000ff'
-      ctx.fillRect(100, 100, 50, 50);
-
+      ctx.save();                            // 今の状態を保存
+      ctx.translate(500, 400);               // 回転の中心に移動（棒の中心座標）
+      ctx.rotate(p.theta);                   // θラジアン回転
+      ctx.fillStyle = '#000000ff';
+      ctx.fillRect(-300, -5, 600, 10);       // 中心基準で描く（左に-300、上に-5）
+      ctx.restore();                         // 座標系を元に戻す
+      
       requestAnimationFrame(update)
     }
 
