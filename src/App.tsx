@@ -13,7 +13,8 @@ export default function App() {
 
       Iyy: 197,
       L_main: 1960,//機体重量が200kgだから
-      ρ:1.225,
+      dure:0.134,//重心と空力重心のずれ
+      rho:1.225,
       S_main:45.6,
       barc:1.2,
       Cm0:-0.13,
@@ -24,19 +25,44 @@ export default function App() {
       elek:0.0792//エレベーターの揚力傾斜
     });
 
+  const lastTime = useRef(0);
+
   useEffect(() => {
-    const update = () => {
+    const update = (timestamp: number) => {
+      // dt を計算（秒に変換）
+      const dt = (timestamp - lastTime.current) / 1000;
+      lastTime.current = timestamp;
+
+      // 初回はdtが大きすぎるのでスキップ
+      if (dt > 0.1) {
+        requestAnimationFrame(update);
+        return;
+      }
+
       const canvas = canvasRef.current
       if (!canvas) return
 
       //制御系
-      const C_L_tail = pitchParam.current.elek * (
-        pitchParam.current.theta +
-        pitchParam.current.delta_e +
-        (180/Math.PI) * pitchParam.current.thetaDot*pitchParam.current.l_tail*(1/pitchParam.current.V)
-      )
+      const p = pitchParam.current;
 
+      const C_L_tail = p.elek * (
+        p.theta +
+        p.delta_e +
+        (180/Math.PI) * p.thetaDot*p.l_tail*(1/p.V)
+      )
       
+      const M_tail = -p.l_tail*
+                      (1/2)*
+                      p.rho*p.V*p.V*
+                      p.S_tail*C_L_tail;
+      
+      const M_ac = (1/2)*p.rho*p.V*p.V*
+                      p.S_main*p.barc*p.Cm0
+
+      const M_main = (-1)*p.L_main*p.dure +M_ac;
+
+      p.thetaDot += (M_main/(p.Iyy) + M_tail/(p.Iyy))*dt;
+      p.theta += p.thetaDot*dt;
 
       const ctx = canvas.getContext('2d')
       if (!ctx) return
@@ -56,7 +82,7 @@ export default function App() {
       requestAnimationFrame(update)
     }
 
-    update();
+    requestAnimationFrame(update);
   }, [force])
 
   return (
