@@ -71,7 +71,7 @@ export default function App() {
       const W = canvas.width;
       const H = canvas.height;
       const bodyLen = W * 0.6;   // 機体の長さ（幅の60%）
-      const bodyH = H * 0.008;   // 機体の太さ
+      const bodyH = H * 0.02;   // 機体の太さ
       const elevLen = W * 0.06;  // エレベーターの長さ
       const elevH = bodyH;       // エレベーターの太さ
 
@@ -96,12 +96,11 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>React Physics Lab</h1>
       <div className="mainPanel">
         <canvas
           ref={canvasRef}
           width={800}
-          height={600}
+          height={300}
         />
         <input className='soujyukan'
           type="range"
@@ -110,6 +109,7 @@ export default function App() {
           defaultValue={0}
           onChange={(e) => { p.delta_e = Number(e.target.value) }} 
         />
+        <p>{p.delta_e}</p>
       </div>
     </div>
   )
