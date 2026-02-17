@@ -68,16 +68,23 @@ export default function App() {
       // 背景をクリア
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+      const W = canvas.width;
+      const H = canvas.height;
+      const bodyLen = W * 0.6;   // 機体の長さ（幅の60%）
+      const bodyH = H * 0.008;   // 機体の太さ
+      const elevLen = W * 0.06;  // エレベーターの長さ
+      const elevH = bodyH;       // エレベーターの太さ
+
       ctx.save();                            
-      ctx.translate(500, 400);               
+      ctx.translate(W / 2, H / 2);               
       ctx.rotate(-p.theta);                   
       ctx.fillStyle = '#000000ff';
-      ctx.fillRect(-300, -5, 600, 10);
+      ctx.fillRect(-bodyLen / 2, -bodyH / 2, bodyLen, bodyH);
         ctx.save();
-        ctx.translate(200,-20);
-        ctx.rotate(-p.delta_e* Math.PI / 180);
+        ctx.translate(bodyLen / 2 * 0.67, -bodyH * 4);
+        ctx.rotate(-p.delta_e * Math.PI / 180);
         ctx.fillStyle = '#000000ff';
-        ctx.fillRect(-30, -5, 60, 10);
+        ctx.fillRect(-elevLen / 2, -elevH / 2, elevLen, elevH);
         ctx.restore();
       ctx.restore();                         
       
@@ -96,7 +103,7 @@ export default function App() {
           width={800}
           height={600}
         />
-        <input 
+        <input className='soujyukan'
           type="range"
           min="-30"
           max="30"
