@@ -22,7 +22,7 @@ export default function App() {
       l_tail:5.79,//重心と尾翼までの長さ
       S_tail:3.22,//エレベーターの面積
 
-      elek:0.0792//エレベーターの揚力傾斜
+      elek:4.54//エレベーターの揚力傾斜
     });
     const p = pitchParam.current;
 
@@ -48,7 +48,7 @@ export default function App() {
       const C_L_tail = p.elek * (
         p.theta +
         p.delta_e +
-        (180/Math.PI) * p.thetaDot*p.l_tail*(1/p.V)
+        Math.atan(p.thetaDot*p.l_tail*(1/p.V))
       )
       
       const M_tail = -p.l_tail*
