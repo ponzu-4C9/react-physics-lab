@@ -89,10 +89,10 @@ export default function App() {
         ctx.fillRect(-elevLen / 2, -elevH / 2, elevLen, elevH);
         ctx.restore();
       ctx.restore();                         
-      
+      forceRender(c => c + 1);
       requestAnimationFrame(update)
     }
-    forceRender(c => c + 1);
+    
     requestAnimationFrame(update);
   }, [])
 
@@ -111,7 +111,7 @@ export default function App() {
           defaultValue={0}
           onChange={(e) => { p.delta_e = Number(e.target.value) }} 
         />
-        <p>{p.delta_e}</p>
+        <p className="paramValue">{String(p.delta_e).padStart(4, ' ')}</p>
       </div>
     </div>
   )

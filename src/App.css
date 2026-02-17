@@ -5,6 +5,14 @@
   padding: 2rem;
 }
 
+.paramValue {
+  font-family: monospace;
+  min-width: 4ch;
+  text-align: right;
+  white-space: pre;
+}
+
+
 h1 {
   color: #e0e0e0;
   margin-bottom: 1rem;
