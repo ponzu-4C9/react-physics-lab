@@ -24,6 +24,7 @@ export default function App() {
 
       elek:0.0792//エレベーターの揚力傾斜
     });
+    const p = pitchParam.current;
 
   const lastTime = useRef(0);
 
@@ -43,7 +44,6 @@ export default function App() {
       if (!canvas) return
 
       //制御系
-      const p = pitchParam.current;
 
       const C_L_tail = p.elek * (
         p.theta +
@@ -97,6 +97,13 @@ export default function App() {
           ref={canvasRef}
           width={1000}
           height={800}
+        />
+        <input 
+          type="range"
+          min="-30"
+          max="30"
+          defaultValue={0}
+          onChange={(e) => { p.delta_e = Number(e.target.value) }} 
         />
       </div>
     </div>
