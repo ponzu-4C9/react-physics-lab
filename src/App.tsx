@@ -7,7 +7,7 @@ export default function App() {
       theta:0,
       thetaDot:0, 
 
-      V:10,//m/s 機体速度
+      V:8,//m/s 機体速度
 
       delta_e:0, //舵角
 
@@ -118,6 +118,7 @@ export default function App() {
         <p>ピッチ角:{String(p.theta*180/Math.PI).padStart(4, ' ')}°</p>
         <p>ピッチ角速度:{String(p.thetaDot*180/Math.PI).padStart(4, ' ')}°/s</p>
       </div>
+
     </div>
   )
 }
