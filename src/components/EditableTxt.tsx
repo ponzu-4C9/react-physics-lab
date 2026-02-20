@@ -12,10 +12,10 @@ export default function EditableTxt({ def, onCommit, unit, nowvalue }: Props) {
     const [editing, setEditing] = useState(false)
     const [text, setText] = useState("")
 
-    if (editing) {
-        return (
-            <div className='flex'>
-                <p className='mr-1'>{def}</p>
+    return (
+        <div className='flex'>
+            <p className='mr-1'>{def}</p>
+            {editing ?
                 <input
                     type="number"
                     autoFocus
@@ -33,11 +33,14 @@ export default function EditableTxt({ def, onCommit, unit, nowvalue }: Props) {
                         }
                         if (e.key === 'Escape') setEditing(false)
                     }}
-                />
-                <span className='ml-1'>{unit}</span>
-            </div>
-        )
-    }
+                /> :
+                <p className='shadow' onClick={() => {
+                    setEditing(true);
+                    setText(String(nowvalue))
+                }}>{nowvalue}</p>
+            }
+            <span className='ml-1'>{unit}</span>
+        </div>
+    )
 
-    return <p onClick={() => { setEditing(true); setText(nowvalue?.toString() || "") }}>{def}{nowvalue}{unit}</p>
 }
