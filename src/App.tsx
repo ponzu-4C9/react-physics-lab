@@ -28,14 +28,14 @@ export default function App() {
 
 
     //PID制御のためのパラメータ
+    target: 0,
+
     kp: 0,
     ki: 0,
     kd: 0,
 
     ipluslimit: 10,
-    iminuslimit: -10,
-
-
+    iminuslimit: -10
   });
   const p = pitchParam.current;
 
@@ -76,6 +76,9 @@ export default function App() {
 
       p.thetaDot += (M_main / (p.Iyy) + M_tail / (p.Iyy)) * dt;
       p.theta += p.thetaDot * dt;
+
+      //PID制御
+      const e = p.target - p.theta;
 
       const ctx = canvas.getContext('2d')
       if (!ctx) return
@@ -127,14 +130,21 @@ export default function App() {
         <EditableTxt def="舵角:" nowvalue={p.delta_e} onCommit={(v) => { p.delta_e = v }} unit="°" />
       </div>
       <SettingTab useRef={pitchParam} />
-      <div className="p-4 text-sm">
-        <p>PID制御</p>
-        <div className='flex p-2'>
+      <div className="p-4">
+        <h2>PID制御</h2>
+        <div className='flex p-2 space-x-8'>
           <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
           <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
           <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+          <input className='soujyukan'
+            type="range"
+            min="-30"
+            max="30"
+            defaultValue={0}
+            onChange={(e) => { p.target = Number(e.target.value) }}
+          />
         </div>
-        <div className='flex p-2'>
+        <div className='flex p-2 space-x-8'>
           <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
           <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
         </div>

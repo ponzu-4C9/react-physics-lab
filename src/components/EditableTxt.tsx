@@ -13,10 +13,14 @@ export default function EditableTxt({ def, onCommit, unit, nowvalue }: Props) {
     const [text, setText] = useState("")
 
     return (
-        <div className='flex'>
+        <div className='flex shadow' onClick={() => {
+            setEditing(true);
+            setText(String(nowvalue))
+        }}>
             <p className='mr-1'>{def}</p>
             {editing ?
                 <input
+                    className='outline-none'
                     type="number"
                     autoFocus
                     defaultValue={nowvalue}
@@ -34,10 +38,7 @@ export default function EditableTxt({ def, onCommit, unit, nowvalue }: Props) {
                         if (e.key === 'Escape') setEditing(false)
                     }}
                 /> :
-                <p className='shadow' onClick={() => {
-                    setEditing(true);
-                    setText(String(nowvalue))
-                }}>{nowvalue}</p>
+                <p>{nowvalue}</p>
             }
             <span className='ml-1'>{unit}</span>
         </div>
