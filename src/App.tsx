@@ -98,7 +98,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <div className="mainPanel">
+      <div className="flex">
         <canvas
           ref={canvasRef}
           width={800}
@@ -111,9 +111,9 @@ export default function App() {
           defaultValue={0}
           onChange={(e) => { p.delta_e = Number(e.target.value) }}
         />
-        <p className="paramValue">舵角:{String(p.delta_e).padStart(4, ' ')}°</p>
+        <p className="p-4">舵角:{String(p.delta_e).padStart(4, ' ')}°</p>
       </div>
-      <div className="paramPanel">
+      <div className="p-4">
         <p>機体速度:{String(p.V).padStart(4, ' ')}m/s</p>
         <p>ピッチ角:{String(p.theta * 180 / Math.PI).padStart(4, ' ')}°</p>
       </div>

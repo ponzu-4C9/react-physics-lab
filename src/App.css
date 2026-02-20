@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+.soujyukan{
+    writing-mode:vertical-rl;
+    padding: 4px;
+}
