@@ -28,9 +28,13 @@ export default function App() {
 
 
     //PID制御のためのパラメータ
-    target: 0,
+    usePID: false,
 
-    kp: 0,
+    target: 0,
+    pre_error: 0,
+    integral: 0,
+
+    kp: 1,
     ki: 0,
     kd: 0,
 
@@ -80,6 +84,21 @@ export default function App() {
       //PID制御
       const e = p.target - p.theta;
 
+      p.integral += e * dt;
+      // 積分のクリッピング
+      if (p.integral > p.ipluslimit) p.integral = p.ipluslimit;
+      if (p.integral < p.iminuslimit) p.integral = p.iminuslimit;
+
+      const derivative = (e - p.pre_error) / dt;
+      const output = p.kp * e + p.ki * p.integral + p.kd * derivative;
+      if (p.usePID) {
+        p.delta_e = output;
+      }
+      p.pre_error = e;
+
+
+
+      //びょうが
       const ctx = canvas.getContext('2d')
       if (!ctx) return
 
@@ -132,21 +151,28 @@ export default function App() {
       <SettingTab useRef={pitchParam} />
       <div className="p-4">
         <h2>PID制御</h2>
-        <div className='flex p-2 space-x-8'>
-          <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
-          <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
-          <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
-          <input className='soujyukan'
-            type="range"
-            min="-30"
-            max="30"
-            defaultValue={0}
-            onChange={(e) => { p.target = Number(e.target.value) }}
-          />
-        </div>
-        <div className='flex p-2 space-x-8'>
-          <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
-          <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+        <div className='flex'>
+          <div>
+            <div className='flex p-2 space-x-8'>
+              <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
+              <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
+              <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+            </div>
+            <div className='flex p-2 space-x-8'>
+              <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
+              <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+            </div>
+          </div>
+          <div className='flex items-center'>
+            <input className='soujyukan'
+              type="range"
+              min="-30"
+              max="30"
+              defaultValue={0}
+              onChange={(e) => { p.target = Number(e.target.value) }}
+            />
+            <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
+          </div>
         </div>
       </div>
     </div>
