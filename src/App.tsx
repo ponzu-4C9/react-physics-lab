@@ -36,9 +36,9 @@ export default function App() {
     pre_error: 0,
     integral: 0,
 
-    kp: 1,
-    ki: 0,
-    kd: 0,
+    kp: -1,
+    ki: -1,
+    kd: -1,
 
     ipluslimit: 10,
     iminuslimit: -10
@@ -180,8 +180,13 @@ export default function App() {
               <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
             </div>
           </div>
-          <div className='flex p-2 space-x-8'>
-            <p>{p.target - p.theta * 180 / Math.PI} = {p.target} - {p.theta * 180 / Math.PI}</p>
+          <div className='p-2 space-x-8 '>
+            <p>error = 目標ピッチ角 - 現在のピッチ角（度）</p>
+            <p>{p.e} = {p.target} - {p.theta * 180 / Math.PI}</p>
+          </div>
+          <div className='p-2 space-x-8 '>
+            <p>舵角 = pゲイン*エラー + iゲイン*積分 + dゲイン*微分</p>
+            <p>{p.delta_e} = {p.kp} * {p.e} + {p.ki} * {p.integral} + {p.kd}  * {(p.e - p.pre_error) / 0.01}</p>
           </div>
         </div>
       </div>
