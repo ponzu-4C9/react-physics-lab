@@ -89,7 +89,7 @@ export default function App() {
       if (p.integral > p.ipluslimit) p.integral = p.ipluslimit;
       if (p.integral < p.iminuslimit) p.integral = p.iminuslimit;
 
-      const derivative = (e - p.pre_error) / dt;
+      const derivative = dt > 0.001 ? (e - p.pre_error) / dt : 0;
       const output = p.kp * e + p.ki * p.integral + p.kd * derivative;
       if (p.usePID) {
         p.delta_e = output;
@@ -144,6 +144,7 @@ export default function App() {
           min="-30"
           max="30"
           defaultValue={0}
+          disabled={p.usePID}
           onChange={(e) => { p.delta_e = Number(e.target.value) }}
         />
         <EditableTxt def="舵角:" nowvalue={p.delta_e} onCommit={(v) => { p.delta_e = v }} unit="°" />
