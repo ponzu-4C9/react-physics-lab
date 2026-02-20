@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import EditableTxt from './components/EditableTxt'
 import './App.css'
 
 export default function App() {
@@ -114,7 +115,7 @@ export default function App() {
         <p className="p-4">舵角:{String(p.delta_e).padStart(4, ' ')}°</p>
       </div>
       <div className="p-4">
-        <p>機体速度:{String(p.V).padStart(4, ' ')}m/s</p>
+        <EditableTxt nowvalue={p.V} onCommit={(v) => { p.V = v }} unit="m/s" />
         <p>ピッチ角:{String(p.theta * 180 / Math.PI).padStart(4, ' ')}°</p>
       </div>
 
