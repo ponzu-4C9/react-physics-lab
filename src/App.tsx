@@ -41,7 +41,8 @@ export default function App() {
     kd: -1,
 
     ipluslimit: 10,
-    iminuslimit: -10
+    iminuslimit: -10,
+    dTerm: 0 // UI表示用のD項
   });
   const p = pitchParam.current;
 
@@ -50,6 +51,7 @@ export default function App() {
   const lastTime = useRef(0);
 
   useEffect(() => {
+    let animationFrameId: number;
     const update = (timestamp: number) => {
       // dt を計算（秒に変換）
       const dt = (timestamp - lastTime.current) / 1000;
@@ -57,7 +59,7 @@ export default function App() {
 
       // 初回はdtが大きすぎるのでスキップ
       if (dt > 0.1) {
-        requestAnimationFrame(update);
+        animationFrameId = requestAnimationFrame(update);
         return;
       }
 
@@ -93,6 +95,7 @@ export default function App() {
 
       const derivative = dt > 0.001 ? (p.e - p.pre_error) / dt : 0;
       const output = p.kp * p.e + p.ki * p.integral + p.kd * derivative;
+      p.dTerm = p.kd * derivative; // モニター用に保存
       if (p.usePID) {
         p.delta_e = output;
       }
@@ -127,10 +130,11 @@ export default function App() {
       ctx.restore();
       ctx.restore();
       forceRender(c => c + 1);
-      requestAnimationFrame(update)
+      animationFrameId = requestAnimationFrame(update)
     }
 
-    requestAnimationFrame(update);
+    animationFrameId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [])
 
   return (
@@ -198,8 +202,9 @@ export default function App() {
               <div className='flex gap-4 text-xs text-gray-500'>
                 <span>P: <span className='text-gray-700 font-medium'>{(p.kp * p.e).toFixed(3)}</span></span>
                 <span>I: <span className='text-gray-700 font-medium'>{(p.ki * p.integral).toFixed(3)}</span></span>
-                <span>D: <span className='text-gray-700 font-medium'>{(p.kd * ((p.e - p.pre_error) / 0.01)).toFixed(3)}</span></span>
+                <span>D: <span className='text-gray-700 font-medium'>{p.dTerm.toFixed(3)}</span></span>
               </div>
+
             </div>
           </div>
         </div>
