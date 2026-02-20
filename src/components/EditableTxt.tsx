@@ -38,7 +38,7 @@ export default function EditableTxt({ def, onCommit, unit, nowvalue }: Props) {
                         if (e.key === 'Escape') setEditing(false)
                     }}
                 /> :
-                <p>{nowvalue}</p>
+                <p>{nowvalue?.toFixed(3)}</p>
             }
             <span className='ml-1'>{unit}</span>
         </div>

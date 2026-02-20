@@ -182,11 +182,11 @@ export default function App() {
           </div>
           <div className='p-2 space-x-8 '>
             <p>error = 目標ピッチ角 - 現在のピッチ角（度）</p>
-            <p>{p.e} = {p.target} - {p.theta * 180 / Math.PI}</p>
+            <p>{p.e.toFixed(3)} = {p.target.toFixed(3)} - {(p.theta * 180 / Math.PI).toFixed(3)}</p>
           </div>
           <div className='p-2 space-x-8 '>
             <p>舵角 = pゲイン*エラー + iゲイン*積分 + dゲイン*微分</p>
-            <p>{p.delta_e} = {p.kp} * {p.e} + {p.ki} * {p.integral} + {p.kd}  * {(p.e - p.pre_error) / 0.01}</p>
+            <p>{p.delta_e.toFixed(3)} = {p.kp.toFixed(3)} * {p.e.toFixed(3)} + {p.ki.toFixed(3)} * {p.integral.toFixed(3)} + {p.kd.toFixed(3)}  * {((p.e - p.pre_error) / 0.01).toFixed(3)}</p>
           </div>
         </div>
       </div>
