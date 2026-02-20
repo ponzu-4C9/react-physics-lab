@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import EditableTxt from './components/EditableTxt'
+import SettingTab from './components/SettingTab'
 import './App.css'
 
 export default function App() {
@@ -112,13 +113,9 @@ export default function App() {
           defaultValue={0}
           onChange={(e) => { p.delta_e = Number(e.target.value) }}
         />
-        <p className="p-4">舵角:{String(p.delta_e).padStart(4, ' ')}°</p>
+        <EditableTxt def="舵角:" nowvalue={p.delta_e} onCommit={(v) => { p.delta_e = v }} unit="°" />
       </div>
-      <div className="p-4">
-        <EditableTxt nowvalue={p.V} onCommit={(v) => { p.V = v }} unit="m/s" />
-        <p>ピッチ角:{String(p.theta * 180 / Math.PI).padStart(4, ' ')}°</p>
-      </div>
-
+      <SettingTab useRef={pitchParam} />
     </div>
   )
 }
