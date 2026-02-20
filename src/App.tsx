@@ -1,29 +1,29 @@
-import { useRef, useEffect, useState} from 'react'
+import { useRef, useEffect, useState } from 'react'
 import './App.css'
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pitchParam = useRef({
-      theta:0,
-      thetaDot:0, 
+    theta: 0,
+    thetaDot: 0,
 
-      V:8,//m/s 機体速度
+    V: 8,//m/s 機体速度
 
-      delta_e:0, //舵角
+    delta_e: 0, //舵角
 
-      Iyy: 197,
-      L_main: 1960,//機体重量が200kgだから
-      dure:0.134,//重心と空力重心のずれ
-      rho:1.225,
-      S_main:45.6,
-      barc:1.2,
-      Cm0:-0.13,
+    Iyy: 197,
+    L_main: 1960,//機体重量が200kgだから
+    dure: 0.134,//重心と空力重心のずれ
+    rho: 1.225,
+    S_main: 45.6,
+    barc: 1.2,
+    Cm0: -0.13,
 
-      l_tail:5.79,//重心と尾翼までの長さ
-      S_tail:3.22,//エレベーターの面積
+    l_tail: 5.79,//重心と尾翼までの長さ
+    S_tail: 3.22,//エレベーターの面積
 
-      elek:4.54//エレベーターの揚力傾斜
-    });
+    elek: 4.54//エレベーターの揚力傾斜
+  });
   const p = pitchParam.current;
 
   const [, forceRender] = useState(0);
@@ -47,22 +47,22 @@ export default function App() {
 
       const C_L_tail = p.elek * (
         p.theta +
-        p.delta_e* Math.PI / 180 +
-        Math.atan(p.thetaDot*p.l_tail*(1/p.V))
+        p.delta_e * Math.PI / 180 +
+        Math.atan(p.thetaDot * p.l_tail * (1 / p.V))
       )
-      
-      const M_tail = -p.l_tail*
-                      (1/2)*
-                      p.rho*p.V*p.V*
-                      p.S_tail*C_L_tail;
-      
-      const M_ac = (1/2)*p.rho*p.V*p.V*
-                      p.S_main*p.barc*p.Cm0
 
-      const M_main = (-1)*p.L_main*p.dure +M_ac;
+      const M_tail = -p.l_tail *
+        (1 / 2) *
+        p.rho * p.V * p.V *
+        p.S_tail * C_L_tail;
 
-      p.thetaDot += (M_main/(p.Iyy) + M_tail/(p.Iyy))*dt;
-      p.theta += p.thetaDot*dt;
+      const M_ac = (1 / 2) * p.rho * p.V * p.V *
+        p.S_main * p.barc * p.Cm0
+
+      const M_main = (-1) * p.L_main * p.dure + M_ac;
+
+      p.thetaDot += (M_main / (p.Iyy) + M_tail / (p.Iyy)) * dt;
+      p.theta += p.thetaDot * dt;
 
       const ctx = canvas.getContext('2d')
       if (!ctx) return
@@ -77,22 +77,22 @@ export default function App() {
       const elevLen = W * 0.06;  // エレベーターの長さ
       const elevH = bodyH;       // エレベーターの太さ
 
-      ctx.save();                            
-      ctx.translate(W / 2, H / 2);               
-      ctx.rotate(-p.theta);                   
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(-p.theta);
       ctx.fillStyle = '#000000ff';
       ctx.fillRect(-bodyLen / 2, -bodyH / 2, bodyLen, bodyH);
-        ctx.save();
-        ctx.translate(bodyLen / 2 * 0.67, -bodyH * 4);
-        ctx.rotate(-p.delta_e * Math.PI / 180);
-        ctx.fillStyle = '#000000ff';
-        ctx.fillRect(-elevLen / 2, -elevH / 2, elevLen, elevH);
-        ctx.restore();
-      ctx.restore();                         
+      ctx.save();
+      ctx.translate(bodyLen / 2 * 0.67, -bodyH * 4);
+      ctx.rotate(-p.delta_e * Math.PI / 180);
+      ctx.fillStyle = '#000000ff';
+      ctx.fillRect(-elevLen / 2, -elevH / 2, elevLen, elevH);
+      ctx.restore();
+      ctx.restore();
       forceRender(c => c + 1);
       requestAnimationFrame(update)
     }
-    
+
     requestAnimationFrame(update);
   }, [])
 
@@ -109,14 +109,13 @@ export default function App() {
           min="-30"
           max="30"
           defaultValue={0}
-          onChange={(e) => { p.delta_e = Number(e.target.value) }} 
+          onChange={(e) => { p.delta_e = Number(e.target.value) }}
         />
         <p className="paramValue">舵角:{String(p.delta_e).padStart(4, ' ')}°</p>
       </div>
       <div className="paramPanel">
         <p>機体速度:{String(p.V).padStart(4, ' ')}m/s</p>
-        <p>ピッチ角:{String(p.theta*180/Math.PI).padStart(4, ' ')}°</p>
-        <p>ピッチ角速度:{String(p.thetaDot*180/Math.PI).padStart(4, ' ')}°/s</p>
+        <p>ピッチ角:{String(p.theta * 180 / Math.PI).padStart(4, ' ')}°</p>
       </div>
 
     </div>
