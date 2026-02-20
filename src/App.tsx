@@ -24,7 +24,18 @@ export default function App() {
     l_tail: 5.79,//重心と尾翼までの長さ
     S_tail: 3.22,//エレベーターの面積
 
-    elek: 4.54//エレベーターの揚力傾斜
+    elek: 4.54,//エレベーターの揚力傾斜
+
+
+    //PID制御のためのパラメータ
+    kp: 0,
+    ki: 0,
+    kd: 0,
+
+    ipluslimit: 10,
+    iminuslimit: -10,
+
+
   });
   const p = pitchParam.current;
 
@@ -116,6 +127,18 @@ export default function App() {
         <EditableTxt def="舵角:" nowvalue={p.delta_e} onCommit={(v) => { p.delta_e = v }} unit="°" />
       </div>
       <SettingTab useRef={pitchParam} />
+      <div className="p-4 text-sm">
+        <p>PID制御</p>
+        <div className='flex p-2'>
+          <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
+          <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
+          <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+        </div>
+        <div className='flex p-2'>
+          <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
+          <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+        </div>
+      </div>
     </div>
   )
 }
