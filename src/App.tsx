@@ -82,7 +82,7 @@ export default function App() {
       p.theta += p.thetaDot * dt;
 
       //PID制御
-      const e = p.target - p.theta;
+      const e = p.target - p.theta * 180 / Math.PI;
 
       p.integral += e * dt;
       // 積分のクリッピング
@@ -150,28 +150,35 @@ export default function App() {
       </div>
       <SettingTab useRef={pitchParam} />
       <div className="p-4">
-        <h2>PID制御</h2>
         <div className='flex'>
-          <div>
-            <div className='flex p-2 space-x-8'>
-              <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
-              <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
-              <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+          <button className='p-2 shadow' onClick={() => { p.usePID = !p.usePID; }}>PID制御</button>
+        </div>
+        <div className={`${p.usePID ? '' : 'pointer-events-none opacity-50'}`}>
+          <div className='flex'>
+            <div>
+              <div className='flex p-2 space-x-8'>
+                <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
+                <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
+                <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+              </div>
+              <div className='flex p-2 space-x-8'>
+                <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
+                <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+              </div>
             </div>
-            <div className='flex p-2 space-x-8'>
-              <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
-              <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+            <div className='flex items-center'>
+              <input className='soujyukan'
+                type="range"
+                min="-30"
+                max="30"
+                defaultValue={0}
+                onChange={(e) => { p.target = Number(e.target.value) }}
+              />
+              <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
             </div>
           </div>
-          <div className='flex items-center'>
-            <input className='soujyukan'
-              type="range"
-              min="-30"
-              max="30"
-              defaultValue={0}
-              onChange={(e) => { p.target = Number(e.target.value) }}
-            />
-            <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
+          <div className='flex p-2 space-x-8'>
+            <p>{p.target - p.theta * 180 / Math.PI} = {p.target} - {p.theta * 180 / Math.PI}</p>
           </div>
         </div>
       </div>
