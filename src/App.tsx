@@ -30,6 +30,8 @@ export default function App() {
     //PID制御のためのパラメータ
     usePID: false,
 
+    e: 0,
+
     target: 0,
     pre_error: 0,
     integral: 0,
@@ -82,19 +84,19 @@ export default function App() {
       p.theta += p.thetaDot * dt;
 
       //PID制御
-      const e = p.target - p.theta * 180 / Math.PI;
+      p.e = p.target - p.theta * 180 / Math.PI;
 
-      p.integral += e * dt;
+      p.integral += p.e * dt;
       // 積分のクリッピング
       if (p.integral > p.ipluslimit) p.integral = p.ipluslimit;
       if (p.integral < p.iminuslimit) p.integral = p.iminuslimit;
 
-      const derivative = dt > 0.001 ? (e - p.pre_error) / dt : 0;
-      const output = p.kp * e + p.ki * p.integral + p.kd * derivative;
+      const derivative = dt > 0.001 ? (p.e - p.pre_error) / dt : 0;
+      const output = p.kp * p.e + p.ki * p.integral + p.kd * derivative;
       if (p.usePID) {
         p.delta_e = output;
       }
-      p.pre_error = e;
+      p.pre_error = p.e;
 
 
 
