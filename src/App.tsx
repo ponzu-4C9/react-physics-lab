@@ -180,13 +180,27 @@ export default function App() {
               <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
             </div>
           </div>
-          <div className='p-2 space-x-8 '>
-            <p>error = 目標ピッチ角 - 現在のピッチ角（度）</p>
-            <p>{p.e.toFixed(3)} = {p.target.toFixed(3)} - {(p.theta * 180 / Math.PI).toFixed(3)}</p>
-          </div>
-          <div className='p-2 space-x-8 '>
-            <p>舵角 = pゲイン*エラー + iゲイン*積分 + dゲイン*微分</p>
-            <p>{p.delta_e.toFixed(3)} = {p.kp.toFixed(3)} * {p.e.toFixed(3)} + {p.ki.toFixed(3)} * {p.integral.toFixed(3)} + {p.kd.toFixed(3)}  * {((p.e - p.pre_error) / 0.01).toFixed(3)}</p>
+          <div className='mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-3 font-[JetBrains_Mono]'>
+            <h3 className='text-sm font-bold text-gray-500 tracking-wide uppercase font-sans'>PID Monitor</h3>
+            <div className='space-y-1'>
+              <p className='text-xs text-gray-400 font-sans'>error = target − θ</p>
+              <p className='text-lg'>
+                <span className={`font-bold ${p.e >= 0 ? 'text-blue-600' : 'text-red-500'}`}>{p.e.toFixed(3)}</span>
+                <span className='text-gray-400 text-sm'> = {p.target.toFixed(3)} − {(p.theta * 180 / Math.PI).toFixed(3)}°</span>
+              </p>
+            </div>
+            <hr className='border-gray-200' />
+            <div className='space-y-1'>
+              <p className='text-xs text-gray-400 font-sans'>δe = Kp·e + Ki·∫e + Kd·ė</p>
+              <p className='text-lg'>
+                <span className={`font-bold ${p.delta_e >= 0 ? 'text-emerald-600' : 'text-orange-500'}`}>{p.delta_e.toFixed(3)}°</span>
+              </p>
+              <div className='flex gap-4 text-xs text-gray-500'>
+                <span>P: <span className='text-gray-700 font-medium'>{(p.kp * p.e).toFixed(3)}</span></span>
+                <span>I: <span className='text-gray-700 font-medium'>{(p.ki * p.integral).toFixed(3)}</span></span>
+                <span>D: <span className='text-gray-700 font-medium'>{(p.kd * ((p.e - p.pre_error) / 0.01)).toFixed(3)}</span></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
