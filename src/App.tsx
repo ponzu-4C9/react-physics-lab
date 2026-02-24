@@ -38,7 +38,7 @@ export default function App() {
 
     kp: -3,
     ki: -3,
-    kd: 0,
+    kd: -1,
 
     ipluslimit: 10,
     iminuslimit: -10,
@@ -47,7 +47,7 @@ export default function App() {
     //舵角の運動についてのパラメータ
     now_u: 0,
     u: [] as number[],
-    mudatime: 0.02,
+    mudatime: 0.1,
     tau: 0.3,
     K: 1,
     delta_eDot: 0,
