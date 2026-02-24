@@ -2,7 +2,7 @@ import { useState } from 'react'
 import EditableTxt from './EditableTxt'
 
 export default function SettingTab({ useRef }: any) {
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState(2);
 
     return (
         <div>

@@ -48,7 +48,7 @@ export default function App() {
     now_u: 0,
     u: [] as number[],
     mudatime: 0.1,
-    tau: 0.3,
+    tau: 1,
     K: 1,
     delta_eDot: 0,
     pre_delta_e: 0
@@ -65,7 +65,6 @@ export default function App() {
     const update = (timestamp: number) => {
       // dt を計算（秒に変換）
       const dt = (timestamp - lastTime.current) / 1000;
-      console.log(dt);
       lastTime.current = timestamp;
 
       // 初回はdtが大きすぎるのでスキップ
