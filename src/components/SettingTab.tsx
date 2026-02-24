@@ -26,6 +26,7 @@ export default function SettingTab({ useRef }: any) {
             }
             {activeTab === 2 &&
                 <div className="p-4">
+                    <EditableTxt def="無駄時間: " nowvalue={useRef.current.mudatime} onCommit={(v: number) => { useRef.current.mudatime = v }} unit="s" />
                     <div className='flex'>
                         <EditableTxt def="時定数tau: " nowvalue={useRef.current.tau} onCommit={(v: number) => { useRef.current.tau = v }} unit="s" />
                         <p className='text-sm ml-4 text-gray-500 text-center'>τ/0.68={useRef.current.tau / 0.68}s</p>

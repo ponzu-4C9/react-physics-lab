@@ -45,7 +45,9 @@ export default function App() {
     dTerm: 0, // UI表示用のD項
 
     //舵角の運動についてのパラメータ
-    u: 0,
+    now_u: 0,
+    u: [] as number[],
+    mudatime: 0.02,
     tau: 0.3,
     K: 1,
     delta_eDot: 0,
@@ -63,6 +65,7 @@ export default function App() {
     const update = (timestamp: number) => {
       // dt を計算（秒に変換）
       const dt = (timestamp - lastTime.current) / 1000;
+      console.log(dt);
       lastTime.current = timestamp;
 
       // 初回はdtが大きすぎるのでスキップ
@@ -73,9 +76,16 @@ export default function App() {
 
       const canvas = canvasRef.current
       if (!canvas) return
+      
+      //無駄時間を再現するためのu配列への登録
+      p.u.push(p.now_u);
+
+      // 無駄時間分のサンプル数を超えたら古い値を取り出す
+      const delaySamples = Math.max(1, Math.round(p.mudatime / dt));
+      const delayedU = p.u.length > delaySamples ? p.u.shift()! : p.u[0];
 
       //舵角の運動 
-      p.delta_eDot = (p.K * p.u - p.delta_e) / p.tau;
+      p.delta_eDot = (p.K * delayedU - p.delta_e) / p.tau;
       p.delta_e += p.delta_eDot * dt;
 
       //機体の運動
@@ -110,7 +120,7 @@ export default function App() {
       const output = p.kp * p.e + p.ki * p.integral + p.kd * derivative;
       p.dTerm = p.kd * derivative; // モニター用に保存
       if (p.usePID) {
-        p.u = output;
+        p.now_u = output;
       }
       p.pre_error = p.e;
 
@@ -164,10 +174,10 @@ export default function App() {
           max="30"
           defaultValue={0}
           disabled={p.usePID}
-          onChange={(e) => { p.u = Number(e.target.value) }}
+          onChange={(e) => { p.now_u = Number(e.target.value) }}
         />
         <div className='p-4'>
-          <EditableTxt def="入力値:" nowvalue={p.u} onCommit={(v) => { p.u = v }} unit="" />
+          <EditableTxt def="入力値:" nowvalue={p.now_u} onCommit={(v) => { p.now_u = v }} unit="" />
         </div>
         <div className="p-4 text-lg">
           <EditableTxt def="機体速度" nowvalue={p.V} onCommit={(v: number) => { p.V = v }} unit="m/s" />
