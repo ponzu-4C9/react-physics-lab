@@ -169,7 +169,7 @@ export default function App() {
         <div className='p-4'>
           <EditableTxt def="入力値:" nowvalue={p.u} onCommit={(v) => { p.u = v }} unit="" />
         </div>
-        <div className="p-4">
+        <div className="p-4 text-lg">
           <EditableTxt def="機体速度" nowvalue={p.V} onCommit={(v: number) => { p.V = v }} unit="m/s" />
           <EditableTxt def="ピッチ角:" nowvalue={p.theta * 180 / Math.PI} onCommit={(v: number) => { p.theta = v * Math.PI / 180 }} unit="°" />
         </div>
