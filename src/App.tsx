@@ -36,9 +36,9 @@ export default function App() {
     pre_error: 0,
     integral: 0,
 
-    kp: -1,
-    ki: -1,
-    kd: -1,
+    kp: -3,
+    ki: -3,
+    kd: 0,
 
     ipluslimit: 10,
     iminuslimit: -10,
@@ -46,7 +46,7 @@ export default function App() {
 
     //舵角の運動についてのパラメータ
     u: 0,
-    tau: 0.1,
+    tau: 0.3,
     K: 1,
     delta_eDot: 0,
     pre_delta_e: 0
@@ -110,7 +110,7 @@ export default function App() {
       const output = p.kp * p.e + p.ki * p.integral + p.kd * derivative;
       p.dTerm = p.kd * derivative; // モニター用に保存
       if (p.usePID) {
-        p.delta_e = output;
+        p.u = output;
       }
       p.pre_error = p.e;
 
@@ -166,7 +166,13 @@ export default function App() {
           disabled={p.usePID}
           onChange={(e) => { p.u = Number(e.target.value) }}
         />
-        <EditableTxt def="入力値:" nowvalue={p.u} onCommit={(v) => { p.u = v }} unit="" />
+        <div className='p-4'>
+          <EditableTxt def="入力値:" nowvalue={p.u} onCommit={(v) => { p.u = v }} unit="" />
+        </div>
+        <div className="p-4">
+          <EditableTxt def="機体速度" nowvalue={p.V} onCommit={(v: number) => { p.V = v }} unit="m/s" />
+          <EditableTxt def="ピッチ角:" nowvalue={p.theta * 180 / Math.PI} onCommit={(v: number) => { p.theta = v * Math.PI / 180 }} unit="°" />
+        </div>
       </div>
       <SettingTab useRef={pitchParam} />
       <div className="p-4">
@@ -200,10 +206,10 @@ export default function App() {
           <div className='mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-3 font-[JetBrains_Mono]'>
             <h3 className='text-sm font-bold text-gray-500 tracking-wide uppercase font-sans'>PID Monitor</h3>
             <div className='space-y-1'>
-              <p className='text-xs text-gray-400 font-sans'>error = target − θ</p>
+              <p className='text-xs text-gray-400 font-sans'>error = target - θ</p>
               <p className='text-lg'>
                 <span className={`font-bold ${p.e >= 0 ? 'text-blue-600' : 'text-red-500'}`}>{p.e.toFixed(3)}</span>
-                <span className='text-gray-400 text-sm'> = {p.target.toFixed(3)} − {(p.theta * 180 / Math.PI).toFixed(3)}°</span>
+                <span className='text-gray-400 text-sm'> = {p.target.toFixed(3)} - {(p.theta * 180 / Math.PI).toFixed(3)}°</span>
               </p>
             </div>
             <hr className='border-gray-200' />
