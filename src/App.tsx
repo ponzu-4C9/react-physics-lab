@@ -15,7 +15,7 @@ export default function App() {
 
     Iyy: 197,
     L_main: 1960,//機体重量が200kgだから
-    dure: 0.134,//重心と空力重心のずれ
+    dure: -0.134,//重心と空力重心のずれ
     rho: 1.225,
     S_main: 45.6,
     barc: 1.2,
