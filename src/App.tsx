@@ -42,7 +42,15 @@ export default function App() {
 
     ipluslimit: 10,
     iminuslimit: -10,
-    dTerm: 0 // UI表示用のD項
+    dTerm: 0, // UI表示用のD項
+
+    //舵角の運動についてのパラメータ
+    u: 0,
+    tau: 0.1,
+    K: 1,
+    delta_eDot: 0,
+    pre_delta_e: 0
+
   });
   const p = pitchParam.current;
 
@@ -66,6 +74,11 @@ export default function App() {
       const canvas = canvasRef.current
       if (!canvas) return
 
+      //舵角の運動 
+      p.delta_eDot = (p.K * p.u - p.delta_e) / p.tau;
+      p.delta_e += p.delta_eDot * dt;
+
+      //機体の運動
       const C_L_tail = p.elek * (
         p.theta +
         p.delta_e * Math.PI / 180 +
@@ -151,9 +164,9 @@ export default function App() {
           max="30"
           defaultValue={0}
           disabled={p.usePID}
-          onChange={(e) => { p.delta_e = Number(e.target.value) }}
+          onChange={(e) => { p.u = Number(e.target.value) }}
         />
-        <EditableTxt def="舵角:" nowvalue={p.delta_e} onCommit={(v) => { p.delta_e = v }} unit="°" />
+        <EditableTxt def="入力値:" nowvalue={p.u} onCommit={(v) => { p.u = v }} unit="" />
       </div>
       <SettingTab useRef={pitchParam} />
       <div className="p-4">
