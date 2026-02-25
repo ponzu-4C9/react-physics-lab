@@ -51,7 +51,10 @@ export default function App() {
     tau: 1,
     K: 1,
     delta_eDot: 0,
-    pre_delta_e: 0
+    pre_delta_e: 0,
+
+    //外乱
+    gust: 0,
 
   });
   const p = pitchParam.current;
@@ -188,51 +191,64 @@ export default function App() {
         <div className='flex'>
           <button className='p-2 shadow' onClick={() => { p.usePID = !p.usePID; }}>PID制御</button>
         </div>
-        <div className={`${p.usePID ? '' : 'pointer-events-none opacity-50'}`}>
-          <div className='flex'>
-            <div>
-              <div className='flex p-2 space-x-8'>
-                <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
-                <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
-                <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+        <div className = "flex">
+          <div className={`${p.usePID ? '' : 'pointer-events-none opacity-50'}`}>
+            <div className='flex'>
+              <div>
+                <div className='flex p-2 space-x-8'>
+                  <EditableTxt def="Pゲイン:" nowvalue={p.kp} onCommit={(v) => { p.kp = v }} unit="" />
+                  <EditableTxt def="Iゲイン:" nowvalue={p.ki} onCommit={(v) => { p.ki = v }} unit="" />
+                  <EditableTxt def="Dゲイン:" nowvalue={p.kd} onCommit={(v) => { p.kd = v }} unit="" />
+                </div>
+                <div className='flex p-2 space-x-8'>
+                  <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
+                  <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+                </div>
               </div>
-              <div className='flex p-2 space-x-8'>
-                <EditableTxt def="I積分上限:" nowvalue={p.ipluslimit} onCommit={(v) => { p.ipluslimit = v }} unit="" />
-                <EditableTxt def="I積分下限:" nowvalue={p.iminuslimit} onCommit={(v) => { p.iminuslimit = v }} unit="" />
+              <div className='flex items-center'>
+                <input className='soujyukan'
+                  type="range"
+                  min="-30"
+                  max="30"
+                  defaultValue={0}
+                  onChange={(e) => { p.target = Number(e.target.value) }}
+                />
+                <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
               </div>
             </div>
-            <div className='flex items-center'>
-              <input className='soujyukan'
-                type="range"
-                min="-30"
-                max="30"
-                defaultValue={0}
-                onChange={(e) => { p.target = Number(e.target.value) }}
-              />
-              <EditableTxt def="目標ピッチ角:" nowvalue={p.target} onCommit={(v) => { p.target = v }} unit="°" />
+            <div className='mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-3 font-[JetBrains_Mono]'>
+              <h3 className='text-sm font-bold text-gray-500 tracking-wide uppercase font-sans'>PID Monitor</h3>
+              <div className='space-y-1'>
+                <p className='text-xs text-gray-400 font-sans'>error = target - θ</p>
+                <p className='text-lg'>
+                  <span className={`font-bold ${p.e >= 0 ? 'text-blue-600' : 'text-red-500'}`}>{p.e.toFixed(3)}</span>
+                  <span className='text-gray-400 text-sm'> = {p.target.toFixed(3)} - {(p.theta * 180 / Math.PI).toFixed(3)}°</span>
+                </p>
+              </div>
+              <hr className='border-gray-200' />
+              <div className='space-y-1'>
+                <p className='text-xs text-gray-400 font-sans'>δe = Kp·e + Ki·∫e + Kd·ė</p>
+                <p className='text-lg'>
+                  <span className={`font-bold ${p.delta_e >= 0 ? 'text-emerald-600' : 'text-orange-500'}`}>{p.delta_e.toFixed(3)}°</span>
+                </p>
+                <div className='flex gap-4 text-xs text-gray-500'>
+                  <span>P: <span className='text-gray-700 font-medium'>{(p.kp * p.e).toFixed(3)}</span></span>
+                  <span>I: <span className='text-gray-700 font-medium'>{(p.ki * p.integral).toFixed(3)}</span></span>
+                  <span>D: <span className='text-gray-700 font-medium'>{p.dTerm.toFixed(3)}</span></span>
+                </div>
+
+              </div>
             </div>
           </div>
-          <div className='mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-3 font-[JetBrains_Mono]'>
-            <h3 className='text-sm font-bold text-gray-500 tracking-wide uppercase font-sans'>PID Monitor</h3>
-            <div className='space-y-1'>
-              <p className='text-xs text-gray-400 font-sans'>error = target - θ</p>
-              <p className='text-lg'>
-                <span className={`font-bold ${p.e >= 0 ? 'text-blue-600' : 'text-red-500'}`}>{p.e.toFixed(3)}</span>
-                <span className='text-gray-400 text-sm'> = {p.target.toFixed(3)} - {(p.theta * 180 / Math.PI).toFixed(3)}°</span>
-              </p>
-            </div>
-            <hr className='border-gray-200' />
-            <div className='space-y-1'>
-              <p className='text-xs text-gray-400 font-sans'>δe = Kp·e + Ki·∫e + Kd·ė</p>
-              <p className='text-lg'>
-                <span className={`font-bold ${p.delta_e >= 0 ? 'text-emerald-600' : 'text-orange-500'}`}>{p.delta_e.toFixed(3)}°</span>
-              </p>
-              <div className='flex gap-4 text-xs text-gray-500'>
-                <span>P: <span className='text-gray-700 font-medium'>{(p.kp * p.e).toFixed(3)}</span></span>
-                <span>I: <span className='text-gray-700 font-medium'>{(p.ki * p.integral).toFixed(3)}</span></span>
-                <span>D: <span className='text-gray-700 font-medium'>{p.dTerm.toFixed(3)}</span></span>
+          <div className='p-4 border-l border-gray-200 ' >
+            <button className='p-2 shadow text-lg' onClick={() => {
+              p.thetaDot += p.gust;
+            }}>外乱</button>
+            <div className='flex'>
+              <div>
+                <EditableTxt def="与える角速度:" nowvalue={p.gust} onCommit={(v) => { p.gust = v }} unit="°/s" />
+                <input type="range" min="-10" max="10" defaultValue="0" step="any" onChange={(e) => { p.gust = Number(e.target.value) }} />
               </div>
-
             </div>
           </div>
         </div>
